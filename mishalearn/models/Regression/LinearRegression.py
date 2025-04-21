@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from metrics import mean_squared_error
+from mishalearn.metrics import mean_squared_error
 
 
 class OLS_Regression:

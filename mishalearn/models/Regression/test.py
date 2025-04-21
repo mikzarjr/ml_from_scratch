@@ -5,7 +5,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 
-from models.Regression.LinearRegression import LIN_Regression, OLS_Regression
+from mishalearn.models.Regression.LinearRegression import OLS_Regression
 
 housing = fetch_california_housing(as_frame=True).frame.dropna()
 X = housing.drop(columns='MedHouseVal')

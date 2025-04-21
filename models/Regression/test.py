@@ -5,7 +5,7 @@ from sklearn.metrics import r2_score, mean_squared_error
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import StandardScaler
 
-from models.Regression.LinearRegression import LIN_Regression
+from models.Regression.LinearRegression import LIN_Regression, OLS_Regression
 
 housing = fetch_california_housing(as_frame=True).frame.dropna()
 X = housing.drop(columns='MedHouseVal')
@@ -21,7 +21,7 @@ for fold, (train_idx, test_idx) in enumerate(kf.split(X_scaled), 1):
     X_tr, X_te = X_scaled.iloc[train_idx], X_scaled.iloc[test_idx]
     y_tr, y_te = y.iloc[train_idx], y.iloc[test_idx]
 
-    model = LIN_Regression()
+    model = OLS_Regression()
     model.fit(X_tr, y_tr)
     preds = model.predict(X_te)
 

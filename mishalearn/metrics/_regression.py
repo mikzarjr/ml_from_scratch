@@ -6,20 +6,25 @@ import pandas as pd
 __ALL__ = [
     'root_mean_squared_error',
     'mean_squared_error',
-    'mean_absolute_error'
+    'mean_absolute_error',
+    'r2_score'
 ]
 
 
 def root_mean_squared_error(y_true: pd.Series, y_pred: pd.Series):
-    squared_errors = (y_true - y_pred) ** 2
-    return sqrt(np.mean(squared_errors))
+    return sqrt(np.mean((y_true - y_pred) ** 2))
 
 
-def mean_squared_error(y_true: pd.Series, y_pred: pd.Series):
-    squared_errors = (y_true - y_pred) ** 2
-    return float(np.mean(squared_errors))
+def mean_squared_error(y_true: pd.Series, y_pred: pd.Series, squared: bool = True):
+    mse = np.mean((y_true - y_pred) ** 2)
+    if squared:
+        return mse
+    return sqrt(mse)
 
 
 def mean_absolute_error(y_true: pd.Series, y_pred: pd.Series):
-    abs_errors = np.abs(y_true - y_pred)
-    return float(np.mean(abs_errors))
+    return np.mean(np.abs(y_true - y_pred))
+
+
+def r2_score(y_true: pd.Series, y_pred: pd.Series):
+    return 1 - np.sum((y_true - y_pred) ** 2) / np.sum((y_true - np.mean(y_true)) ** 2)

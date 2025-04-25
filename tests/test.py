@@ -1,6 +1,5 @@
 import pandas as pd
 from sklearn.datasets import fetch_california_housing
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from mishalearn.metrics import root_mean_squared_error, r2_score
@@ -11,6 +10,7 @@ from mishalearn.models import (
     ElasticNetRegression,
     OLSRegression
 )
+from mishalearn.preprocesing import train_test_split
 
 
 def evaluate_model(model, X_train, X_test, y_train, y_test, name):

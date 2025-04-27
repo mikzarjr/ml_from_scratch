@@ -215,8 +215,8 @@ class LinearRegression(BaseLinearModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def _compute_gradient(self, X_batch, err):
-        return 2 / X_batch.shape[0] * np.dot(X_batch.T, err)
+    def _compute_gradient(self, X, err):
+        return 2 / X.shape[0] * np.dot(X.T, err)
 
 
 class RidgeRegression(BaseLinearModel):

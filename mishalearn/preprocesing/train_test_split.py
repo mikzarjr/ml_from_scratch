@@ -7,7 +7,6 @@ def train_test_split(*arrays: pd.DataFrame | pd.Series, test_size=0.25, random_s
         np.random.seed(random_state)
 
     n_samples = arrays[0].shape[0]
-
     indices = np.arange(n_samples)
 
     if shuffle:

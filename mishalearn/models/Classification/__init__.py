@@ -1,8 +1,12 @@
 __ALL__ = [
-    'OLSRegression',
-    'LinearRegression'
+    'KNN',
+    'LinearClassification'
 ]
 
 from ._KNN import (
     KNN,
+)
+
+from ._LinearClassification import (
+    LinearClassification
 )

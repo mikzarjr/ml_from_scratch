@@ -7,7 +7,8 @@ __ALL__ = [
     'root_mean_squared_error',
     'mean_squared_error',
     'mean_absolute_error',
-    'r2_score'
+    'r2_score',
+    'mean_absolute_percentage_error'
 ]
 
 
@@ -28,3 +29,7 @@ def mean_absolute_error(y_true: pd.Series, y_pred: pd.Series):
 
 def r2_score(y_true: pd.Series, y_pred: pd.Series):
     return 1 - np.sum((y_true - y_pred) ** 2) / np.sum((y_true - np.mean(y_true)) ** 2)
+
+
+def mean_absolute_percentage_error(y_true: pd.Series, y_pred: pd.Series):
+    return np.mean(np.abs((y_true - y_pred) / y_true))

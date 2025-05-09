@@ -180,7 +180,10 @@ class BaseLinearModel(ABC):
 
     @abstractmethod
     def _compute_gradient(self, X_batch, err):
-        raise NotImplementedError("Метод _compute_gradient должен быть переопределён в подклассе!")
+        """
+        Gradient computation. Must be implemented in the child class.
+        """
+        raise NotImplementedError
 
     def _plot_loss(self) -> None:
         if not self._show_graph or not self._cost_history:

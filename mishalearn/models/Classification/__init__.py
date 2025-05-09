@@ -3,9 +3,7 @@ __ALL__ = [
     'LinearClassification'
 ]
 
-from ._KNN import (
-    KNN,
-)
+from ._KNN import KNN
 
 from ._LinearClassification import (
     LinearClassification

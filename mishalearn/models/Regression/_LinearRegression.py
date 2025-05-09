@@ -183,7 +183,7 @@ class BaseLinearModel(ABC):
         """
         Gradient computation. Must be implemented in the child class.
         """
-        raise NotImplementedError
+        raise NotImplementedError("Must be implemented in the child class.")
 
     def _plot_loss(self) -> None:
         if not self._show_graph or not self._cost_history:

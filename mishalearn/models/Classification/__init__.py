@@ -1,10 +1,13 @@
 __ALL__ = [
     'KNN',
-    'LinearClassification'
+    'LinearClassification',
+    'SVM',
+    'LogisticRegression'
 ]
 
 from ._KNN import KNN
-
 from ._LinearClassification import (
-    LinearClassification
+    LinearClassification,
+    SVM,
+    LogisticRegression
 )

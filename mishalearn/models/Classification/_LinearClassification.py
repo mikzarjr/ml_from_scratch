@@ -8,12 +8,12 @@ import pandas as pd
 class BaseClassifier(ABC):
     def __init__(
             self,
-            max_iter: int = 1000,
-            lr: float = 0.001,
-            l1_alpha: Optional[float] = None,
-            l2_alpha: Optional[float] = None,
-            stochastic: bool = False,
-            batch_size: Optional[float] = None
+            max_iter: int,
+            lr: float,
+            l1_alpha: Optional[float],
+            l2_alpha: Optional[float],
+            stochastic: bool,
+            batch_size: Optional[float]
     ):
         self._max_iter = max_iter
         self._lr = lr
@@ -27,7 +27,8 @@ class BaseClassifier(ABC):
     def fit(self, X: pd.DataFrame | pd.Series | np.ndarray, y: pd.Series | np.ndarray) -> None:
         X_np = self._prepare_data(X)
         X_mat = np.insert(X_np, 0, 1.0, axis=1)
-        y_vec = y.to_numpy().flatten() if isinstance(y, pd.Series) else np.array(y).flatten()
+        y_raw = y.to_numpy().flatten() if isinstance(y, pd.Series) else np.array(y).flatten()
+        y_vec = self._prepare_labels(y_raw)
 
         self._W = np.zeros(X_mat.shape[1])
 
@@ -86,6 +87,10 @@ class BaseClassifier(ABC):
             return X.to_numpy()
         return np.array(X)
 
+    @staticmethod
+    def _prepare_labels(y_vec: np.ndarray) -> np.ndarray:
+        return y_vec
+
 
 class LinearClassification(BaseClassifier):
     def __init__(
@@ -97,19 +102,20 @@ class LinearClassification(BaseClassifier):
             stochastic: bool = False,
             batch_size: Optional[float] = None
     ):
-        super().__init__(max_iter, lr, l1_alpha, l2_alpha)
-        self._stochastic = stochastic
-        self._batch_size = batch_size
+        super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
 
     def _calculate_preds(self, X_mat):
         preds = np.sign(np.dot(X_mat, self._W))
-        return preds
+        return ((preds + 1) // 2).astype(int)
 
     def _compute_gradient(self, X_mat, y_vec, batch_idxs):
         for i in batch_idxs:
             x_i, y_i = X_mat[i], y_vec[i]
             if y_i * np.dot(self._W, x_i) <= 0:
                 self._W += self._lr * y_i * x_i
+
+    def _prepare_labels(self, y_vec: np.ndarray) -> np.ndarray:
+        return np.where(y_vec == 0, -1, +1)
 
 
 class SVM(BaseClassifier):
@@ -122,9 +128,7 @@ class SVM(BaseClassifier):
             stochastic: bool = False,
             batch_size: Optional[float] = None
     ):
-        super().__init__(max_iter, lr, l1_alpha, l2_alpha)
-        self._stochastic = stochastic
-        self._batch_size = batch_size
+        super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
 
     def _compute_gradient(self, X_mat, y_vec, batch_idxs):
         for i in batch_idxs:
@@ -134,7 +138,10 @@ class SVM(BaseClassifier):
 
     def _calculate_preds(self, X_mat):
         preds = np.sign(np.dot(X_mat, self._W))
-        return preds
+        return ((preds + 1) // 2).astype(int)
+
+    def _prepare_labels(self, y_vec: np.ndarray) -> np.ndarray:
+        return np.where(y_vec == 0, -1, +1)
 
 
 class LogisticRegression(BaseClassifier):
@@ -147,9 +154,7 @@ class LogisticRegression(BaseClassifier):
             stochastic: bool = False,
             batch_size: Optional[float] = None
     ):
-        super().__init__(max_iter, lr, l1_alpha, l2_alpha)
-        self._stochastic = stochastic
-        self._batch_size = batch_size
+        super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
 
     def _compute_gradient(self, X_mat, y_vec, batch_idxs):
         for i in batch_idxs:

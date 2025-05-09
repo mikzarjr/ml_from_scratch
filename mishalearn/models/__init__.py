@@ -3,11 +3,14 @@ __ALL__ = [
     'LinearRegression',
     'RidgeRegression',
     'LassoRegression',
-    'ElasticNetRegression'
+    'ElasticNetRegression',
+    'KNN',
+    'LinearClassification'
 ]
 
 from .Classification import (
     KNN,
+    LinearClassification
 )
 from .Regression import (
     OLSRegression,

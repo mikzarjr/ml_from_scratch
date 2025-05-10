@@ -1,11 +1,13 @@
-from abc import ABC, abstractmethod
-from typing import Union, Optional
+from abc import ABC
+from typing import Optional
 
 import numpy as np
 import pandas as pd
 
+from mishalearn.models.Classification.Base import BaseClassifier
 
-class BaseClassifier(ABC):
+
+class BaseLinearClassifier(BaseClassifier, ABC):
     def __init__(
             self,
             max_iter: int,
@@ -15,6 +17,7 @@ class BaseClassifier(ABC):
             stochastic: bool,
             batch_size: Optional[float]
     ):
+        super().__init__()
         self._max_iter = max_iter
         self._lr = lr
         self._l1_alpha = l1_alpha
@@ -22,17 +25,9 @@ class BaseClassifier(ABC):
         self._stochastic = stochastic
         self._stochastic = stochastic
         self._batch_size = batch_size
-        self._W: Optional[np.ndarray] = None
 
-    def fit(self, X: pd.DataFrame | pd.Series | np.ndarray, y: pd.Series | np.ndarray) -> None:
-        X_np = self._prepare_data(X)
-        X_mat = np.insert(X_np, 0, 1.0, axis=1)
-        y_raw = y.to_numpy().flatten() if isinstance(y, pd.Series) else np.array(y).flatten()
-        y_vec = self._prepare_labels(y_raw)
-
-        self._W = np.zeros(X_mat.shape[1])
-
-        n = X_mat.shape[0]
+    def _fit(self, X: pd.DataFrame | pd.Series | np.ndarray, y: pd.Series | np.ndarray) -> None:
+        n = X.shape[0]
         if self._stochastic:
             if self._batch_size is None:
                 bs = 1
@@ -51,29 +46,7 @@ class BaseClassifier(ABC):
             for start in range(0, n, bs):
                 batch_idxs = idxs[start:start + bs]
                 self._regularization()
-                self._compute_gradient(X_mat, y_vec, batch_idxs)
-
-    def predict(self, X: Union[pd.DataFrame, pd.Series, np.ndarray]) -> pd.Series:
-        X_np = self._prepare_data(X)
-        X_mat = np.insert(X_np, 0, 1.0, axis=1)
-        preds = self._calculate_preds(X_mat)
-        if isinstance(X, (pd.DataFrame, pd.Series)):
-            return pd.Series(preds, index=X.index)
-        return pd.Series(preds)
-
-    @abstractmethod
-    def _calculate_preds(self, X_mat):
-        """
-        Predictions computation. Must be implemented in the child class.
-        """
-        raise NotImplementedError("Must be implemented in the child class.")
-
-    @abstractmethod
-    def _compute_gradient(self, X_mat, y_vec, batch_idx):
-        """
-        Gradient computation. Must be implemented in the child class.
-        """
-        raise NotImplementedError("Must be implemented in the child class.")
+                self._calculate_gradient(X, y, batch_idxs)
 
     def _regularization(self):
         if self._l2_alpha is not None:
@@ -81,18 +54,8 @@ class BaseClassifier(ABC):
         if self._l1_alpha is not None:
             self._W[1:] -= self._lr * self._l1_alpha * np.sign(self._W[1:])
 
-    @staticmethod
-    def _prepare_data(X: Union[pd.DataFrame, pd.Series, np.ndarray]) -> np.ndarray:
-        if isinstance(X, (pd.DataFrame, pd.Series)):
-            return X.to_numpy()
-        return np.array(X)
 
-    @staticmethod
-    def _prepare_labels(y_vec: np.ndarray) -> np.ndarray:
-        return y_vec
-
-
-class LinearClassification(BaseClassifier):
+class LinearClassification(BaseLinearClassifier):
     def __init__(
             self,
             max_iter: int = 1000,
@@ -104,21 +67,26 @@ class LinearClassification(BaseClassifier):
     ):
         super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
 
-    def _calculate_preds(self, X_mat):
-        preds = np.sign(np.dot(X_mat, self._W))
-        return ((preds + 1) // 2).astype(int)
-
-    def _compute_gradient(self, X_mat, y_vec, batch_idxs):
+    def _calculate_gradient(self, X_mat, y_vec, batch_idxs):
         for i in batch_idxs:
             x_i, y_i = X_mat[i], y_vec[i]
             if y_i * np.dot(self._W, x_i) <= 0:
                 self._W += self._lr * y_i * x_i
 
-    def _prepare_labels(self, y_vec: np.ndarray) -> np.ndarray:
-        return np.where(y_vec == 0, -1, +1)
+    def _calculate_preds(self, X_mat):
+        preds = np.sign(np.dot(X_mat, self._W))
+        return preds
+
+    def _prepare_classes_forward(self, y: np.ndarray) -> np.ndarray:
+        forward_map = {0: -1, 1: +1}
+        return np.array([forward_map[label] for label in y])
+
+    def _prepare_classes_backward(self, preds_vec: np.ndarray) -> np.ndarray:
+        forward_map = {-1: 0, +1: 1}
+        return np.array([forward_map[label] for label in preds_vec])
 
 
-class SVM(BaseClassifier):
+class SVM(BaseLinearClassifier):
     def __init__(
             self,
             max_iter: int = 1000,
@@ -130,7 +98,7 @@ class SVM(BaseClassifier):
     ):
         super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
 
-    def _compute_gradient(self, X_mat, y_vec, batch_idxs):
+    def _calculate_gradient(self, X_mat, y_vec, batch_idxs):
         for i in batch_idxs:
             x_i, y_i = X_mat[i], y_vec[i]
             if 1 - y_i * np.dot(self._W, x_i) > 0:
@@ -138,13 +106,18 @@ class SVM(BaseClassifier):
 
     def _calculate_preds(self, X_mat):
         preds = np.sign(np.dot(X_mat, self._W))
-        return ((preds + 1) // 2).astype(int)
+        return preds
 
-    def _prepare_labels(self, y_vec: np.ndarray) -> np.ndarray:
-        return np.where(y_vec == 0, -1, +1)
+    def _prepare_classes_forward(self, y: np.ndarray) -> np.ndarray:
+        forward_map = {0: -1, 1: +1}
+        return np.array([forward_map[label] for label in y])
+
+    def _prepare_classes_backward(self, preds_vec: np.ndarray) -> np.ndarray:
+        forward_map = {-1: 0, +1: 1}
+        return np.array([forward_map[label] for label in preds_vec])
 
 
-class LogisticRegression(BaseClassifier):
+class LogisticRegression(BaseLinearClassifier):
     def __init__(
             self,
             max_iter: int = 1000,
@@ -156,7 +129,7 @@ class LogisticRegression(BaseClassifier):
     ):
         super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
 
-    def _compute_gradient(self, X_mat, y_vec, batch_idxs):
+    def _calculate_gradient(self, X_mat, y_vec, batch_idxs):
         for i in batch_idxs:
             x_i, y_i = X_mat[i], y_vec[i]
             self._W += self._lr * x_i * (y_i - 1 / (1 + np.exp(-np.dot(x_i, self._W))))

@@ -5,17 +5,17 @@ __ALL__ = [
     'LassoRegression',
     'ElasticNetRegression',
     'KNN',
-    'LinearClassification',
-    'SVM',
-    'LogisticRegression',
+    'Perceptron_BinaryClassificator',
+    'SVM_BinaryClassificator',
+    'LogisticRegression_BinaryClassificator',
     'OneVsAllClassifier'
 ]
 
 from .Classification import (
     KNN,
-    LinearClassification,
-    SVM,
-    LogisticRegression,
+    Perceptron_BinaryClassificator,
+    SVM_BinaryClassificator,
+    LogisticRegression_BinaryClassificator,
     OneVsAllClassifier,
     AllVsAllClassifier
 )

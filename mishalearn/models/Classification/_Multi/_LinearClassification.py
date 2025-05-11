@@ -1,52 +1,24 @@
-from abc import ABC, abstractmethod
-from typing import Union, Any, Dict
+from abc import ABC
+from typing import Any, Dict
 
 import numpy as np
 import pandas as pd
 
-from mishalearn.models.Classification.BaseLC import BaseClassifier
+from ..._Core import BaseLinearClassifier, BaseMultiLinearClassifier
 
 
-class BaseMultiClassifier(BaseClassifier, ABC):
-    def __init__(self):
-        super().__init__()
-        self._classes = None
-
-    def _fit(self, X_mat: Union[pd.DataFrame, pd.Series, np.ndarray], y_vec: Union[pd.Series, np.ndarray]) -> None:
-        self._classes = np.unique(y_vec)
-        for cls in self._classes:
-            self._fit_multiclass(X_mat, y_vec, cls)
-
-    @abstractmethod
-    def _fit_multiclass(self, X_mat: np.ndarray, y_arr: np.ndarray, cls: int) -> None:
+class OneVsAllClassifier(BaseMultiLinearClassifier, ABC):
+    def __init__(self, base_clf_cls: Any, **base_clf_params):
         """
-        Multiclass fit. Must be implemented in the child class.
-        """
-        raise NotImplementedError("Must be implemented in the child class.")
-
-    @staticmethod
-    def _check_classes(y_unique):
-        if len(y_unique) <= 2:
-            raise ValueError("Number of target classes must be > 2 for multiclass classification")
-        if min(y_unique) != 0 and max(y_unique) != len(y_unique) - 1:
-            raise ValueError("Target classes must be formatted as 0, 1, 2...")
-        return
-
-
-class OneVsAllClassifier(BaseMultiClassifier, ABC):
-    def __init__(self,
-                 base_clf_cls: Any,
-                 **base_clf_params):
-        """
-        _base_clf_cls    — класс бинарного классификатора
-                          (например, LinearClassification или SVM)
-        base_clf_params — его конструктор-параметры
-                          (lr, max_iter, l1_alpha, l2_alpha, и т.д.)
+        _base_clf_cls — Binary classificator
+                        (e.g. Perceptron_BinaryClassificator, SVM_BinaryClassificator)
+        _base_clf_params — Binary classificator params
+                        (lr, max_iter, l1_alpha, l2_alpha, etc.)
         """
         super().__init__()
         self._base_clf_cls = base_clf_cls
         self._base_clf_params = base_clf_params
-        self._clfs: Dict[Any, BaseClassifier] = {}
+        self._clfs: Dict[Any, BaseLinearClassifier] = {}
 
     def _fit_multiclass(self, X_mat: np.ndarray, y_arr: np.ndarray, cls: int) -> None:
         y_bin = (y_arr == cls).astype(int)
@@ -65,19 +37,20 @@ class OneVsAllClassifier(BaseMultiClassifier, ABC):
         return self._classes[idxs]
 
 
-class AllVsAllClassifier(BaseMultiClassifier):
-    def __init__(self,
-                 base_clf_cls: Any,
-                 **base_clf_params):
+class AllVsAllClassifier(BaseMultiLinearClassifier):
+    def __init__(self, base_clf_cls: Any, **base_clf_params):
+        """
+        _base_clf_cls — Binary classificator
+                        (e.g. Perceptron_BinaryClassificator, SVM_BinaryClassificator)
+        _base_clf_params — Binary classificator params
+                        (lr, max_iter, l1_alpha, l2_alpha, etc.)
+        """
         super().__init__()
         self._base_clf_cls = base_clf_cls
         self._base_clf_params = base_clf_params
-        self._clfs: Dict[Any, BaseClassifier] = {}
+        self._clfs: Dict[Any, BaseLinearClassifier] = {}
 
-    def _fit_multiclass(self,
-                        X_mat: np.ndarray,
-                        y_arr: np.ndarray,
-                        cls: int) -> None:
+    def _fit_multiclass(self, X_mat: np.ndarray, y_arr: np.ndarray, cls: int) -> None:
 
         for other in self._classes:
             if other <= cls:

@@ -7,7 +7,7 @@ import pandas as pd
 from ..._Core import BaseLinearClassifier, BaseMultiLinearClassifier
 
 
-class OneVsAllClassifier(BaseMultiLinearClassifier, ABC):
+class OvA_MultiClassificator(BaseMultiLinearClassifier, ABC):
     def __init__(self, base_clf_cls: Any, **base_clf_params):
         """
         _base_clf_cls — Binary classificator
@@ -37,7 +37,7 @@ class OneVsAllClassifier(BaseMultiLinearClassifier, ABC):
         return self._classes[idxs]
 
 
-class AllVsAllClassifier(BaseMultiLinearClassifier):
+class AvA_MultiClassificator(BaseMultiLinearClassifier):
     def __init__(self, base_clf_cls: Any, **base_clf_params):
         """
         _base_clf_cls — Binary classificator

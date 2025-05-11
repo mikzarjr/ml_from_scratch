@@ -1,9 +1,9 @@
 __ALL__ = [
-    'OneVsAllClassifier',
-    'AllVsAllClassifier'
+
 ]
 
 from ._LinearClassification import (
-    OneVsAllClassifier,
-    AllVsAllClassifier
+    OvA_MultiClassificator,
+    AvA_MultiClassificator
 )
+from ._LogisticRegression import LogisticRegression_BinaryClassificator

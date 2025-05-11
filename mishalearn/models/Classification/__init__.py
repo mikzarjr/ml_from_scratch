@@ -1,18 +1,14 @@
 __ALL__ = [
-    'KNN',
-    'LinearClassification',
-    'SVM',
-    'LogisticRegression',
-    'OneVsAllClassifier'
+
 ]
 
 from ._Binary import (
-    LinearClassification,
-    SVM,
-    LogisticRegression
+    Perceptron_BinaryClassificator,
+    SVM_BinaryClassificator,
+    LogisticRegression_BinaryClassificator
 )
 from ._KNN import KNN
 from ._Multi import (
-    OneVsAllClassifier,
-    AllVsAllClassifier
+    OvA_MultiClassificator,
+    AvA_MultiClassificator
 )

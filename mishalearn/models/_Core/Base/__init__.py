@@ -12,5 +12,5 @@ from .Linear import (
     BaseLinearClassifier,
     BaseBinaryLinearClassifier,
     BaseLinearRegressor,
-BaseMultiLinearClassifier
+    BaseMultiLinearClassifier
 )

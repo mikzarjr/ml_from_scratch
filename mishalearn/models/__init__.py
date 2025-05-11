@@ -1,14 +1,4 @@
 __ALL__ = [
-    'OLSRegression',
-    'LinearRegression',
-    'RidgeRegression',
-    'LassoRegression',
-    'ElasticNetRegression',
-    'KNN',
-    'Perceptron_BinaryClassificator',
-    'SVM_BinaryClassificator',
-    'LogisticRegression_BinaryClassificator',
-    'OneVsAllClassifier'
 ]
 
 from .Classification import (
@@ -16,13 +6,14 @@ from .Classification import (
     Perceptron_BinaryClassificator,
     SVM_BinaryClassificator,
     LogisticRegression_BinaryClassificator,
-    OneVsAllClassifier,
-    AllVsAllClassifier
+
+    OvA_MultiClassificator,
+    AvA_MultiClassificator
 )
 from .Regression import (
-    OLSRegression,
-    LinearRegression,
-    RidgeRegression,
-    LassoRegression,
-    ElasticNetRegression
+    OLS_Regression,
+    Linear_Regression,
+    Ridge_Regression,
+    Lasso_Regression,
+    ElasticNet_Regression
 )

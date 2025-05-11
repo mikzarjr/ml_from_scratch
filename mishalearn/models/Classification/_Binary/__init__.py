@@ -1,11 +1,9 @@
 __ALL__ = [
-    'LinearClassification',
-    'SVM',
-    'LogisticRegression'
+
 ]
 
 from ._LinearClassification import (
-    LinearClassification,
-    SVM,
-    LogisticRegression
+    Perceptron_BinaryClassificator,
+    SVM_BinaryClassificator
 )
+from ._LogisticRegression import LogisticRegression_BinaryClassificator

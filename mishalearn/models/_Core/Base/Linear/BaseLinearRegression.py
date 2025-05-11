@@ -18,41 +18,19 @@ from abc import ABC, abstractmethod
 class BaseLinearRegressor(BaseLinear, ABC):
     def __init__(
             self,
+            max_iter: int = 10000,
             lr: float = 0.001,
             delta_converged: float = 1e-6,
-            max_steps: int = 10000,
             batch_size: int | float = 0.01,
-            loss: callable = mean_squared_error,
             descend: str = 'simple',
             verbose: bool = False,
             show_graph: bool = False,
     ):
-        """
-        Parameters
-        ----------
-        lr : float
-            Learning rate.
-        delta_converged : float
-            Convergence threshold for early stopping.
-        max_steps : int
-            Maximum number of optimization steps.
-        batch_size : int or float
-            Size of mini-batch (absolute or relative if <1).
-        loss : callable
-            Loss function (default: mean_squared_error).
-        descend : str
-            'simple' for full-batch gradient descent, 'stochastic' for SGD.
-        verbose : bool
-            Whether to print training logs.
-        show_graph : bool
-            Whether to plot and save loss graph after training.
-        """
         super().__init__()
         self._lr = lr
         self._delta = delta_converged
-        self._max_steps = max_steps
+        self._max_steps = max_iter
         self._batch_size = batch_size
-        self._loss = loss
         self._verbose = verbose
         self._show_graph = show_graph
 
@@ -109,7 +87,7 @@ class BaseLinearRegressor(BaseLinear, ABC):
             self._W -= self._lr * grad
 
             full_preds = self._X.dot(self._W)
-            cost = self._loss(self._y, full_preds)
+            cost = mean_squared_error(self._y, full_preds)
             self._cost_history.append(cost)
 
             if self._verbose and step % 100 == 0:
@@ -134,7 +112,7 @@ class BaseLinearRegressor(BaseLinear, ABC):
 
             self._W -= self._lr * grad
 
-            curr_loss = self._loss(self._y, preds)
+            curr_loss = mean_squared_error(self._y, preds)
             self._cost_history.append(curr_loss)
 
             if self._verbose and step % 100 == 0:

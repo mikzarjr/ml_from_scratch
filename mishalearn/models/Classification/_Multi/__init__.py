@@ -1,5 +1,9 @@
 __ALL__ = [
-    'KNN',
+    'OneVsAllClassifier',
+    'AllVsAllClassifier'
 ]
 
-from ._KNN import KNN
+from ._LinearClassification import (
+    OneVsAllClassifier,
+    AllVsAllClassifier
+)

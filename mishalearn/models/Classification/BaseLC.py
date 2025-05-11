@@ -17,7 +17,7 @@ class BaseClassifier(ABC):
 
         self._fit(X_mat, y_vec)
 
-    def _fit(self, X: pd.DataFrame | pd.Series | np.ndarray, y: pd.Series | np.ndarray) -> None:
+    def _fit(self, X_mat: pd.DataFrame | pd.Series | np.ndarray, y_vec: pd.Series | np.ndarray) -> None:
         """
         Model fit. Must be implemented in the child class.
         """
@@ -34,13 +34,6 @@ class BaseClassifier(ABC):
     def _calculate_preds(self, X_mat):
         """
         Predictions computation. Must be implemented in the child class.
-        """
-        raise NotImplementedError("Must be implemented in the child class.")
-
-    @abstractmethod
-    def _calculate_gradient(self, X_mat, y_vec, batch_idx):
-        """
-        Gradient computation. Must be implemented in the child class.
         """
         raise NotImplementedError("Must be implemented in the child class.")
 

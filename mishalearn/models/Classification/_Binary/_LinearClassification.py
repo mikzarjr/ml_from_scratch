@@ -1,13 +1,13 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Optional
 
 import numpy as np
 import pandas as pd
 
-from mishalearn.models.Classification.Base import BaseClassifier
+from mishalearn.models.Classification.BaseLC import BaseClassifier
 
 
-class BaseLinearClassifier(BaseClassifier, ABC):
+class BaseBinaryClassifier(BaseClassifier, ABC):
     def __init__(
             self,
             max_iter: int,
@@ -25,8 +25,8 @@ class BaseLinearClassifier(BaseClassifier, ABC):
         self._stochastic = stochastic
         self._batch_size = batch_size
 
-    def _fit(self, X: pd.DataFrame | pd.Series | np.ndarray, y: pd.Series | np.ndarray) -> None:
-        n = X.shape[0]
+    def _fit(self, X_mat: pd.DataFrame | pd.Series | np.ndarray, y_vec: pd.Series | np.ndarray) -> None:
+        n = X_mat.shape[0]
         if self._stochastic:
             if self._batch_size is None:
                 bs = 1
@@ -45,7 +45,7 @@ class BaseLinearClassifier(BaseClassifier, ABC):
             for start in range(0, n, bs):
                 batch_idxs = idxs[start:start + bs]
                 self._regularization()
-                self._calculate_gradient(X, y, batch_idxs)
+                self._calculate_gradient(X_mat, y_vec, batch_idxs)
 
     def _regularization(self):
         if self._l2_alpha is not None:
@@ -61,8 +61,15 @@ class BaseLinearClassifier(BaseClassifier, ABC):
             raise ValueError("Target classes must be formatted as 0 and 1")
         return
 
+    @abstractmethod
+    def _calculate_gradient(self, X_mat, y_vec, batch_idx):
+        """
+        Gradient computation. Must be implemented in the child class.
+        """
+        raise NotImplementedError("Must be implemented in the child class.")
 
-class LinearClassification(BaseLinearClassifier):
+
+class LinearClassification(BaseBinaryClassifier):
     def __init__(
             self,
             max_iter: int = 1000,
@@ -93,7 +100,7 @@ class LinearClassification(BaseLinearClassifier):
         return np.array([forward_map[label] for label in preds_vec])
 
 
-class SVM(BaseLinearClassifier):
+class SVM(BaseBinaryClassifier):
     def __init__(
             self,
             max_iter: int = 1000,
@@ -124,7 +131,7 @@ class SVM(BaseLinearClassifier):
         return np.array([forward_map[label] for label in preds_vec])
 
 
-class LogisticRegression(BaseLinearClassifier):
+class LogisticRegression(BaseBinaryClassifier):
     def __init__(
             self,
             max_iter: int = 1000,

@@ -7,14 +7,17 @@ __ALL__ = [
     'KNN',
     'LinearClassification',
     'SVM',
-    'LogisticRegression'
+    'LogisticRegression',
+    'OneVsAllClassifier'
 ]
 
 from .Classification import (
     KNN,
     LinearClassification,
     SVM,
-    LogisticRegression
+    LogisticRegression,
+    OneVsAllClassifier,
+    AllVsAllClassifier
 )
 from .Regression import (
     OLSRegression,

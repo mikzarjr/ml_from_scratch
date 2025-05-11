@@ -10,6 +10,6 @@ from .BaseLinear import BaseLinear
 from .BaseLinearClassification import (
     BaseLinearClassifier,
     BaseBinaryLinearClassifier,
-BaseMultiLinearClassifier
+    BaseMultiLinearClassifier
 )
 from .BaseLinearRegression import BaseLinearRegressor

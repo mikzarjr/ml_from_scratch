@@ -1,15 +1,15 @@
 __ALL__ = [
-    'OLSRegression',
-    'LinearRegression',
-    'RidgeRegression',
-    'LassoRegression',
-    'ElasticNetRegression'
+    'OLS_Regression',
+    'Linear_Regression',
+    'Ridge_Regression',
+    'Lasso_Regression',
+    'ElasticNet_Regression'
 ]
 
 from ._LinearRegression import (
-    OLSRegression,
-    LinearRegression,
-    RidgeRegression,
-    LassoRegression,
-    ElasticNetRegression
+    Linear_Regression,
+    Ridge_Regression,
+    Lasso_Regression,
+    ElasticNet_Regression
 )
+from ._OrdinaryLeastSquares import OLS_Regression

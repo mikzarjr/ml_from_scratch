@@ -85,12 +85,12 @@ class BaseLinearClassifier(BaseLinear, ABC):
 class BaseBinaryLinearClassifier(BaseLinearClassifier, ABC):
     def __init__(
             self,
-            max_iter: int,
-            lr: float,
-            l1_alpha: Optional[float],
-            l2_alpha: Optional[float],
-            stochastic: bool,
-            batch_size: Optional[float]
+            max_iter: int = 2000,
+            lr: float = 0.001,
+            l1_alpha: Optional[float] = None,
+            l2_alpha: Optional[float] = None,
+            stochastic: bool = False,
+            batch_size: Optional[float] = None
     ):
         super().__init__()
         self._max_iter = max_iter

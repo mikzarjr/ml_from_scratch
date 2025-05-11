@@ -9,7 +9,10 @@ __ALL__ = [
 ]
 
 from ._classification import (
-    accuracy
+    accuracy,
+    precision,
+    recall,
+    f1_score
 )
 from ._regression import (
     root_mean_squared_error,

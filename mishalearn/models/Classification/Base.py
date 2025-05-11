@@ -52,6 +52,9 @@ class BaseClassifier(ABC):
 
     def _prepare_labels(self, y: np.ndarray) -> np.ndarray:
         y_vec = y.to_numpy().flatten() if isinstance(y, pd.Series) else np.array(y).flatten()
+        y_unique = set(y_vec)
+
+        self._check_classes(y_unique)
         y_vec = self._prepare_classes_forward(y_vec)
         return y_vec
 
@@ -71,3 +74,14 @@ class BaseClassifier(ABC):
     @staticmethod
     def _prepare_classes_backward(preds_vec):
         return preds_vec
+
+    @staticmethod
+    def _check_classes(y_unique):
+        """
+        Check valid number of classes:
+            <2 - error
+            2 - binary
+            >2 - multiclass
+        Must be implemented in the child class.
+        """
+        raise NotImplementedError("Must be implemented in the child class.")

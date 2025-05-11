@@ -54,6 +54,13 @@ class BaseLinearClassifier(BaseClassifier, ABC):
         if self._l1_alpha is not None:
             self._W[1:] -= self._lr * self._l1_alpha * np.sign(self._W[1:])
 
+    @staticmethod
+    def _check_classes(y_unique):
+        if len(y_unique) == 2:
+            return
+        else:
+            raise ValueError("Number of target classes must be 2 for binary classification")
+
 
 class LinearClassification(BaseLinearClassifier):
     def __init__(

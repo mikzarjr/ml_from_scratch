@@ -2,7 +2,7 @@ from sklearn.datasets import (load_breast_cancer,
                               make_classification)
 from sklearn.linear_model import Perceptron
 
-from base import test
+from src.BaseTests import test
 from mishalearn.metrics import (accuracy,
                                 f1_score)
 from mishalearn.models import (Perceptron_BinaryClassificator)

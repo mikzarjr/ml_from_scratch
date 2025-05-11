@@ -3,7 +3,7 @@ from sklearn.datasets import (load_digits,
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.svm import LinearSVC
 
-from base import test
+from src.BaseTests import test
 from mishalearn.metrics import (accuracy,
                                 f1_score)
 from mishalearn.models import (AvA_MultiClassificator,

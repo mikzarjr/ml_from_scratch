@@ -23,7 +23,6 @@ class BaseLinearClassifier(BaseClassifier, ABC):
         self._l1_alpha = l1_alpha
         self._l2_alpha = l2_alpha
         self._stochastic = stochastic
-        self._stochastic = stochastic
         self._batch_size = batch_size
 
     def _fit(self, X: pd.DataFrame | pd.Series | np.ndarray, y: pd.Series | np.ndarray) -> None:
@@ -56,10 +55,11 @@ class BaseLinearClassifier(BaseClassifier, ABC):
 
     @staticmethod
     def _check_classes(y_unique):
-        if len(y_unique) == 2:
-            return
-        else:
+        if len(y_unique) != 2:
             raise ValueError("Number of target classes must be 2 for binary classification")
+        if y_unique != {0, 1}:
+            raise ValueError("Target classes must be formatted as 0 and 1")
+        return
 
 
 class LinearClassification(BaseLinearClassifier):

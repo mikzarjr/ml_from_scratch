@@ -1,27 +1,40 @@
-from typing import Optional
+from typing import Dict, Any
 
 import numpy as np
 
-from ..._Core import BaseBinaryLinearClassifier
+from mishalearn.models.Classification._Binary._LogisticRegression import LogisticRegression_BinaryClassificator
+from mishalearn.models._Core import BaseMultiLinearClassifier
 
 
-class LogisticRegression_BinaryClassificator(BaseBinaryLinearClassifier):
-    def __init__(
-            self,
-            max_iter: int = 1000,
-            lr: float = 0.001,
-            l1_alpha: Optional[float] = None,
-            l2_alpha: Optional[float] = None,
-            stochastic: bool = False,
-            batch_size: Optional[float] = None
-    ):
-        super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
+class LogisticRegression_MultiClassificator(BaseMultiLinearClassifier):
+    def __init__(self, **LogRegparams):
+        """
+        LogRegparams — Logistic Regressor parameters:
+                    (lr, max_iter, l1_alpha, l2_alpha, etc.)
+        """
+        super().__init__()
+        self._params: Dict[str, Any] = LogRegparams
+        self._clfs: Dict[Any, LogisticRegression_BinaryClassificator] = {}
 
-    def _calculate_gradient(self, X_mat, y_vec, batch_idxs):
-        for i in batch_idxs:
-            x_i, y_i = X_mat[i], y_vec[i]
-            self._W += self._lr * x_i * (y_i - 1 / (1 + np.exp(-np.dot(x_i, self._W))))
+    def _fit_multiclass(self, X_mat: np.ndarray, y_arr: np.ndarray, cls: int) -> None:
+        y_binary = (y_arr == cls).astype(int)
 
-    def _calculate_preds(self, X_mat):
-        preds = 1 / (1 + np.exp(-np.dot(X_mat, self._W)))
-        return (preds >= 0.5).astype(int)
+        clf = LogisticRegression_BinaryClassificator(**self._params)
+        clf._W = np.zeros(X_mat.shape[1])
+        clf._fit(X_mat, y_binary)
+        self._clfs[cls] = clf
+
+    def _calculate_preds(self, X_mat: np.ndarray) -> np.ndarray:
+        n_samples = X_mat.shape[0]
+        n_classes = len(self._classes)
+        probs = np.zeros((n_samples, n_classes))
+
+        sigmoid = lambda z: 1 / (1 + np.exp(-z))
+
+        for idx, cls in enumerate(self._classes):
+            clf = self._clfs[cls]
+            z = X_mat.dot(clf._W)
+            probs[:, idx] = sigmoid(z)
+
+        preds_idx = np.argmax(probs, axis=1)
+        return self._classes[preds_idx]

@@ -1,21 +1,11 @@
-from typing import Optional
-
 import numpy as np
 
-from ..._Core import BaseBinaryLinearClassifier
+from mishalearn.models._Core import BaseBinaryLinearClassifier
 
 
 class LogisticRegression_BinaryClassificator(BaseBinaryLinearClassifier):
-    def __init__(
-            self,
-            max_iter: int = 1000,
-            lr: float = 0.001,
-            l1_alpha: Optional[float] = None,
-            l2_alpha: Optional[float] = None,
-            stochastic: bool = False,
-            batch_size: Optional[float] = None
-    ):
-        super().__init__(max_iter, lr, l1_alpha, l2_alpha, stochastic, batch_size)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def _calculate_gradient(self, X_mat, y_vec, batch_idxs):
         for i in batch_idxs:

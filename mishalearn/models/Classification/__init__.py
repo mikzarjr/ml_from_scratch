@@ -10,5 +10,6 @@ from ._Binary import (
 from ._KNN import KNN
 from ._Multi import (
     OvA_MultiClassificator,
-    AvA_MultiClassificator
+    AvA_MultiClassificator,
+    LogisticRegression_MultiClassificator
 )

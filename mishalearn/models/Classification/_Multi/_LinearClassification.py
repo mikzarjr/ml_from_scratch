@@ -4,16 +4,16 @@ from typing import Any, Dict
 import numpy as np
 import pandas as pd
 
-from ..._Core import BaseLinearClassifier, BaseMultiLinearClassifier
+from mishalearn.models._Core import BaseLinearClassifier, BaseMultiLinearClassifier
 
 
 class OvA_MultiClassificator(BaseMultiLinearClassifier, ABC):
     def __init__(self, base_clf_cls: Any, **base_clf_params):
         """
-        _base_clf_cls — Binary classificator
-                        (e.g. Perceptron_BinaryClassificator, SVM_BinaryClassificator)
-        _base_clf_params — Binary classificator params
-                        (lr, max_iter, l1_alpha, l2_alpha, etc.)
+        base_clf_cls — Binary classificator
+                    (e.g. Perceptron_BinaryClassificator, SVM_BinaryClassificator)
+        base_clf_params — Binary classificator params
+                    (lr, max_iter, l1_alpha, l2_alpha, etc.)
         """
         super().__init__()
         self._base_clf_cls = base_clf_cls
@@ -40,10 +40,10 @@ class OvA_MultiClassificator(BaseMultiLinearClassifier, ABC):
 class AvA_MultiClassificator(BaseMultiLinearClassifier):
     def __init__(self, base_clf_cls: Any, **base_clf_params):
         """
-        _base_clf_cls — Binary classificator
-                        (e.g. Perceptron_BinaryClassificator, SVM_BinaryClassificator)
-        _base_clf_params — Binary classificator params
-                        (lr, max_iter, l1_alpha, l2_alpha, etc.)
+        base_clf_cls — Binary classificator
+                    (e.g. Perceptron_BinaryClassificator, SVM_BinaryClassificator)
+        base_clf_params — Binary classificator params
+                    (lr, max_iter, l1_alpha, l2_alpha, etc.)
         """
         super().__init__()
         self._base_clf_cls = base_clf_cls

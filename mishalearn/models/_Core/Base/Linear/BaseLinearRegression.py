@@ -3,7 +3,7 @@ import shutil
 
 import matplotlib
 
-from .BaseLinear import BaseLinear
+from mishalearn.models._Core.Base.Linear.BaseLinear import BaseLinear
 
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ class BaseLinearRegressor(BaseLinear, ABC):
             lr: float = 0.001,
             delta_converged: float = 1e-6,
             batch_size: int | float = 0.01,
-            descend: str = 'simple',
+            stochastic: str = False,
             verbose: bool = False,
             show_graph: bool = False,
     ):
@@ -37,12 +37,7 @@ class BaseLinearRegressor(BaseLinear, ABC):
         if self._show_graph:
             self._graph_initialized = False
 
-        descend_methods = {
-            'stochastic': self._stochastic_gradient_descent,
-            'simple': self._gradient_descent
-        }
-        self._descend_method = descend_methods[descend]
-
+        self._stochastic = stochastic
         self._W = None
         self._X = None
         self._y = None
@@ -56,7 +51,10 @@ class BaseLinearRegressor(BaseLinear, ABC):
         self._y = y.to_numpy().flatten()
         self._W = np.random.randn(self._X.shape[1])
 
-        self._descend_method()
+        if self._stochastic:
+            self._stochastic_gradient_descent()
+        else:
+            self._gradient_descent()
 
     def predict(self, X: pd.DataFrame | pd.Series) -> pd.Series:
         X_ = X.copy() if isinstance(X, pd.DataFrame) else pd.DataFrame(X)

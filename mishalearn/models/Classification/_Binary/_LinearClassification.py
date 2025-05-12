@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..._Core import BaseBinaryLinearClassifier
+from mishalearn.models._Core import BaseBinaryLinearClassifier
 
 
 class Perceptron_BinaryClassificator(BaseBinaryLinearClassifier):

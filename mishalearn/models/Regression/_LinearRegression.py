@@ -1,13 +1,13 @@
 import matplotlib
 
-from .._Core import BaseLinearRegressor
+from mishalearn.models._Core import BaseLinearRegressor
 
 matplotlib.use("TkAgg")
 
 import numpy as np
 
 
-class Linear_Regression(BaseLinearRegressor):
+class Linear_Regressor(BaseLinearRegressor):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -15,7 +15,7 @@ class Linear_Regression(BaseLinearRegressor):
         return 2 / X.shape[0] * np.dot(X.T, err)
 
 
-class Ridge_Regression(BaseLinearRegressor):
+class Ridge_Regressor(BaseLinearRegressor):
     def __init__(self, alpha=0.01, **kwargs):
         super().__init__(**kwargs)
         self.alpha = alpha
@@ -25,7 +25,7 @@ class Ridge_Regression(BaseLinearRegressor):
         return 2 / X_batch.shape[0] * np.dot(X_batch.T, err) + 2 * self.alpha * reg_vector
 
 
-class Lasso_Regression(BaseLinearRegressor):
+class Lasso_Regressor(BaseLinearRegressor):
     def __init__(self, alpha=0.01, **kwargs):
         super().__init__(**kwargs)
         self.alpha = alpha
@@ -35,7 +35,7 @@ class Lasso_Regression(BaseLinearRegressor):
         return 2 / X_batch.shape[0] * np.dot(X_batch.T, err) + self.alpha * reg_vector
 
 
-class ElasticNet_Regression(BaseLinearRegressor):
+class ElasticNet_Regressor(BaseLinearRegressor):
     def __init__(self, alpha1=0.01, alpha2=0.01, **kwargs):
         super().__init__(**kwargs)
         self.alpha1 = alpha1

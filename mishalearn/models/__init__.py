@@ -8,12 +8,13 @@ from .Classification import (
     LogisticRegression_BinaryClassificator,
 
     OvA_MultiClassificator,
-    AvA_MultiClassificator
+    AvA_MultiClassificator,
+    LogisticRegression_MultiClassificator
 )
 from .Regression import (
     OLS_Regression,
-    Linear_Regression,
-    Ridge_Regression,
-    Lasso_Regression,
-    ElasticNet_Regression
+    Linear_Regressor,
+    Ridge_Regressor,
+    Lasso_Regressor,
+    ElasticNet_Regressor
 )

@@ -4,12 +4,26 @@ from typing import Union, Optional
 import numpy as np
 import pandas as pd
 
-from .BaseLinear import BaseLinear
+from mishalearn.models._Core.Base.Linear.BaseLinear import BaseLinear
 
 
 class BaseLinearClassifier(BaseLinear, ABC):
-    def __init__(self):
+    def __init__(
+            self,
+            max_iter: int = 2000,
+            lr: float = 0.001,
+            l1_alpha: Optional[float] = None,
+            l2_alpha: Optional[float] = None,
+            stochastic: bool = False,
+            batch_size: Optional[float] = None
+    ):
         super().__init__()
+        self._max_iter = max_iter
+        self._lr = lr
+        self._l1_alpha = l1_alpha
+        self._l2_alpha = l2_alpha
+        self._stochastic = stochastic
+        self._batch_size = batch_size
 
     def fit(self, X: pd.DataFrame | pd.Series | np.ndarray, y: pd.Series | np.ndarray) -> None:
         X_mat = self._prepare_data(X)
@@ -83,22 +97,8 @@ class BaseLinearClassifier(BaseLinear, ABC):
 
 
 class BaseBinaryLinearClassifier(BaseLinearClassifier, ABC):
-    def __init__(
-            self,
-            max_iter: int = 2000,
-            lr: float = 0.001,
-            l1_alpha: Optional[float] = None,
-            l2_alpha: Optional[float] = None,
-            stochastic: bool = False,
-            batch_size: Optional[float] = None
-    ):
-        super().__init__()
-        self._max_iter = max_iter
-        self._lr = lr
-        self._l1_alpha = l1_alpha
-        self._l2_alpha = l2_alpha
-        self._stochastic = stochastic
-        self._batch_size = batch_size
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def _fit(self, X_mat: pd.DataFrame | pd.Series | np.ndarray, y_vec: pd.Series | np.ndarray) -> None:
         n = X_mat.shape[0]
@@ -145,8 +145,8 @@ class BaseBinaryLinearClassifier(BaseLinearClassifier, ABC):
 
 
 class BaseMultiLinearClassifier(BaseLinearClassifier, ABC):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._classes = None
 
     def _fit(self, X_mat: Union[pd.DataFrame, pd.Series, np.ndarray], y_vec: Union[pd.Series, np.ndarray]) -> None:
@@ -165,6 +165,6 @@ class BaseMultiLinearClassifier(BaseLinearClassifier, ABC):
     def _check_classes(y_unique):
         if len(y_unique) <= 2:
             raise ValueError("Number of target classes must be > 2 for multiclass classification")
-        if min(y_unique) != 0 and max(y_unique) != len(y_unique) - 1:
-            raise ValueError("Target classes must be formatted as 0, 1, 2...")
+        if set(y_unique) != set(range(len(y_unique))):
+            raise ValueError("Target classes must be formatted as 0, 1 ... K-1")
         return

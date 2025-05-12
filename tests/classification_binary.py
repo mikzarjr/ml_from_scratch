@@ -15,7 +15,7 @@ datasets = [
     ("SyntheticBin", make_classification(
         n_samples=1000,
         n_features=20,
-        n_informative=10,
+        n_informative=17,
         n_classes=2,
         random_state=0
     ))

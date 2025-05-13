@@ -23,6 +23,7 @@ metrics = [
     r2_score
 ]
 
+result = test(my_model, sk_model, datasets, metrics)
+
 if __name__ == "__main__":
-    result = test(my_model, sk_model, datasets, metrics)
     print(result.to_string(index=False))

@@ -5,12 +5,10 @@ from sklearn.svm import LinearSVC
 
 from mishalearn.metrics import (accuracy,
                                 f1_score)
-from mishalearn.models import (LogisticRegression_MultiClassificator)
+from mishalearn.models import (AvA_MultiClassificator, SVM_BinaryClassificator)
 from src.BaseTests import test
 
-# my_model = AvA_MultiClassificator(base_clf_cls=SVM_BinaryClassificator)
-my_model = LogisticRegression_MultiClassificator()
-
+my_model = AvA_MultiClassificator(base_clf_cls=SVM_BinaryClassificator)
 sk_model = OneVsOneClassifier(estimator=LinearSVC())
 
 datasets = [
